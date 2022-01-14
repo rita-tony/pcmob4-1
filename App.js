@@ -36,8 +36,6 @@ export default function App() {
   }
 
   function loadBusStopData() {
-    let arrivalTime, nextArrivalTime;
-
     setLoading(true);
 
     fetch(BUSSTOP_URL)
