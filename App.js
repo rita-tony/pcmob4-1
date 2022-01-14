@@ -68,9 +68,9 @@ export default function App() {
       });
   }
 
-  {/* auto refresh every 10 minutes */}
+  {/* auto refresh every 5 minutes */}
   useEffect(() => {
-    const interval = setInterval(loadBusStopData, 10000);
+    const interval = setInterval(loadBusStopData, 250000);
     
     //Return the function to run when unmounting
     return() => clearInterval(interval);
