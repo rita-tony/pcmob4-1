@@ -12,22 +12,31 @@ export default function App() {
   const [nextArrival, setNextArrival] = useState("");
 
   function getArrivalTimeAndDuration(busDateTime, duration_ms) {
-    let arrivalTime = new Date(busDateTime).toLocaleTimeString();
-    let minute = "";
-    let returnText = "";
+    //console.log("duration_ms :" + duration_ms);
+    //console.log("busDateTime: " + busDateTime);
+
+    var arrivalTime = new Date(busDateTime).toLocaleTimeString();
+    var minute = 0;
+    var second = 0;
+
+    var returnText = "";
 
     if (duration_ms == null)
     {
-      minute = "NA";
       returnText = "NA";
     }
+    else if (duration_ms < 0)
+    {
+      returnText = "(now)";
+    }
     else {
-      minute = (duration_ms / 60000).toFixed(0);
+      minute = Math.floor(duration_ms / 60000);
+      second = ((duration_ms % 60000) / 1000).toFixed(0);
 
-      if (minute > 0)
-        returnText = "(" + minute + " mins)";
-      else
-        returnText = "(now)";
+      //console.log("minute: " + minute);
+      //console.log("sec: " + second);
+
+      returnText = "(" + (second == 60 ? (minute + 1) + " min " : minute + " min " + (second < 10 ? "0" : "") + second) + " sec)";
     }
 
     returnText = arrivalTime + " " + returnText;
@@ -55,10 +64,8 @@ export default function App() {
           //console.log("My Bus " + BusNo);
           //console.log(myBus);
 
-          let x = getArrivalTimeAndDuration(myBus.next.time, myBus.next.duration_ms);
-          let y = getArrivalTimeAndDuration(myBus.next2.time, myBus.next2.duration_ms);
-          //console.log("arrival time : " + x);
-          //console.log("next arrival time : " + y);
+          var x = getArrivalTimeAndDuration(myBus.next.time, myBus.next.duration_ms);
+          var y = getArrivalTimeAndDuration(myBus.next2.time, myBus.next2.duration_ms);
 
           setArrival(x);
           setNextArrival(y);
@@ -68,9 +75,9 @@ export default function App() {
       });
   }
 
-  {/* auto refresh every 5 minutes */}
+  {/* auto refresh every 1 minutes */}
   useEffect(() => {
-    const interval = setInterval(loadBusStopData, 250000);
+    const interval = setInterval(loadBusStopData, 60000);
     
     //Return the function to run when unmounting
     return() => clearInterval(interval);
@@ -83,7 +90,8 @@ export default function App() {
       <Text style={styles.titleText}>Bus Stop: {BusStop}</Text>
       <Text style={styles.titleText}>Arrival Time: </Text>
       <Text style={styles.arrivalText}>{loading ? <ActivityIndicator color="blue" size="large" /> : arrival}</Text>
-      <Text style={styles.nextArrivalText}>Next Arrival: {loading ? <ActivityIndicator color="blue" size="large" /> : nextArrival}</Text>
+      <Text style={[styles.titleText, {fontSize:25}]}>Next Arrival: </Text>
+      <Text style={styles.nextArrivalText}>{loading ? <ActivityIndicator color="blue" size="large" /> : nextArrival}</Text>
       <TouchableOpacity style={styles.button} onPress={loadBusStopData}>
         <Text style={styles.buttonText}>Refresh</Text>
       </TouchableOpacity>
