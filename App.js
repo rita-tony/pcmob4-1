@@ -36,7 +36,6 @@ function HomeScreen({ navigation }) {
           maxLength={10}
           value={busNo}
           onChangeText={(txtBusNo) => setBusNo(txtBusNo)}
-          keyboardType="numeric"
         >
         </TextInput>
 
